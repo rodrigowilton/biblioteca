@@ -13,7 +13,7 @@
         <a class="navbar-brand" href="{% url 'home' %}">StreetOnline</a>
        {% if usuario_logado %}
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-               Cadastro de Livro
+               Cadastrar
           </button>
 
           <a href="{% url 'sair' %}" class="btn btn-danger">Sair</a>
@@ -31,23 +31,72 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Cadastrar Livro</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Cadastrar</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <form action="{% url 'cadastrar_livro' %}" method="POST">
-                    {% csrf_token %}
-                    <table>
-                        {{form.as_table}}
-                    </table>
-                    <input type="submit" class="btn btn-success">
-                </form>
+                  <button style="margin-left: 15px;" onclick="mostrar_form(1)" class="btn btn-info">Categoria</button>
+                  <button style="margin-left: 15px;" onclick="mostrar_form(2)" class="btn btn-info">Livro</button>
+                  <button style="margin-left: 15px;" onclick="mostrar_form(3)" class="btn btn-info">Emprestimo</button>
+                  <br>
+                  <hr>
+                  <br>
+
+                  <!-- esta é uma forma de fazer a tela de cadastro usando modal.Models -->
+
+                  <div style="Display:none;" id="livro">
+                    <form action="{% url 'cadastrar_livro' %}" method="POST">
+                        {% csrf_token %}
+                        <table>
+                            {{form.as_table}}
+                        </table>
+                        <input type="submit" class="btn btn-success">
+                    </form>
+                  </div>
+
+                  <!-- este ja outro forma de fazer a tela de cadastro usando forms.Form -->
+
+                  <div style="Display:none;" id="categoria">
+                      <form action="{% url 'cadastrar_categoria' %}" method="POST"> {% csrf_token %}
+                          <table>
+                              {{form_categoria.as_table}}
+                          </table>
+                          <input type="hidden" name="usuario" value="{{usario_logado}}">
+                          <input type="submit" class="btn btn-success">
+                      </form>
+                  </div>
+                  <div style="Display:none;" id="emprestimos">
+                     emprestimos
+                  </div>
               </div>
             </div>
           </div>
         </div>
     {% endif %}
+
+
+      <script>
+        function mostrar_form(v1){
+            categorio = document.getElementById("categoria")
+            livro = document.getElementById("livro")
+            emprestimos = document.getElementById("emprestimos")
+
+            if(v1 == 1){
+                categoria.style.display = 'block';
+                livro.style.display = 'none';
+                emprestimos.style.display = 'none';
+            }else if(v1 == 2){
+                livro.style.display = 'block';
+                categoria.style.display = 'none';
+                emprestimos.style.display = 'none';
+            }else if(v1 == 3){
+                emprestimos.style.display = 'block';
+                livro.style.display = 'none';
+                categoria.style.display = 'none';
+            }
+        }
+      </script>
   </body>
 </html>

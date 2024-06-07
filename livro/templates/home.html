@@ -4,6 +4,11 @@
 <br>
 <br>
 <div class="container">
+	{% if status_categoria == '1' %}
+		<div class="alert alert-success" role="alert">
+		  Cadastro realizado com sucesso!
+		</div>
+	{% endif %}
 	<div class="row">
 		{% for livro in livros %}
 			<div class="col-md">
