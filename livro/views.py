@@ -16,27 +16,35 @@ def home(request):
         form.fields['categoria'].queryset = Categoria.objects.filter(usuario = usuario)
         form_categoria = CategoriaLivro()
 
+        var_usuario = Usuario.objects.all()
+
+
         return render(request,'home.html', {'livros' : livros, 'usuario_logado': request.session.get('usuario'),
-                                            'form': form, 'status_categoria': status_categoria,'form_categoria': form_categoria})
+                                            'form': form, 'status_categoria': status_categoria,'form_categoria': form_categoria,
+                                            'var_usuario':var_usuario})
     else:
         return redirect('/auth/login/?status=2')
-    
-    
+
+
 def ver_livros(request, id):
     if request.session.get('usuario'):
-        livros = Livros.objects.get(id=id)
-        if request.session.get('usuario') == livros.usuario.id:
+        livro = Livros.objects.get(id=id)
+        if request.session.get('usuario') == livro.usuario.id:
             usuario = Usuario.objects.get(id=request.session['usuario'])
             categoria_livro = Categoria.objects.filter(usuario = request.session.get('usuario'))
-            emprestimos = Emprestimos.objects.filter(livro = livros)
+            emprestimos = Emprestimos.objects.filter(livro = livro)
             form = CadastroLivro()
             form.fields['usuario'].initial = request.session['usuario']
             form.fields['categoria'].queryset = Categoria.objects.filter(usuario=usuario)
 
             form_categoria = CategoriaLivro()
+            var_usuario = Usuario.objects.all()
 
-            return render(request, 'ver_livro.html',{'livro': livros, 'categoria_livro': categoria_livro, 'emprestimos': emprestimos,
-                                                     'usuario_logado':request.session.get('usuario'),'form':form, 'form_categoria': form_categoria, 'id_livro': id })
+            livros = Livros.objects.filter(usuario_id = request.session.get('usuario'))
+
+            return render(request, 'ver_livro.html',{'livro': livro, 'categoria_livro': categoria_livro, 'emprestimos': emprestimos,
+                                                     'usuario_logado':request.session.get('usuario'),'form':form, 'form_categoria': form_categoria,
+                                                     'id_livro': id, 'var_usuario':var_usuario,'livros':livros })
         else:
             return HttpResponse('Esse livro não é seu')
     return redirect('/auth/login/?status=2')
@@ -75,3 +83,38 @@ def cadastrar_categoria(request):
             return HttpResponse("Erro no formulário")
     else:
         return HttpResponse("Método inválido")
+
+
+def cadastrar_emprestimo(request):
+    if request.method == 'POST':
+        livro_id = request.POST.get('livro_id')
+        nome_emprestado = request.POST.get('nome_emprestado')
+        nome_emprestado_anonimo = request.POST.get('nome_emprestado_anonimo')
+
+        livro = Livros.objects.get(id=livro_id)
+
+        if nome_emprestado:
+            usuario = Usuario.objects.get(id=nome_emprestado)
+            emprestimo = Emprestimos(
+                nome_emprestado=usuario,
+                data_emprestimo=datetime.datetime.now(),
+                livro=livro,
+                # preencha outros campos conforme necessário
+            )
+        else:
+            emprestimo = Emprestimos(
+                nome_emprestado_anonimo=nome_emprestado_anonimo,
+                data_emprestimo=datetime.datetime.now(),
+                livro=livro,
+                # preencha outros campos conforme necessário
+            )
+        emprestimo.save()
+        return redirect('/livro/home')
+
+    livros = Livros.objects.all()
+    usuarios = Usuario.objects.all()
+    context = {
+        'livros': livros,
+        'usuarios': usuarios
+    }
+    return render(request, 'home.html', context)

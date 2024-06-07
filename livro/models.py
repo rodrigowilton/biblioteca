@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 from usuarios.models import Usuario
+import datetime
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=30)
@@ -32,15 +33,23 @@ class Livros(models.Model):
 
 
 class Emprestimos(models.Model):
-        nome_emprestado = models.ForeignKey(Usuario, on_delete=models.DO_NOTHING, blank=True, null=True)
-        nome_emprestado_anonimmo = models.CharField(max_length=30, blank=True, null=True)
-        data_emprestimo = models.DateField(blank=True, null=True)
-        data_devolucao = models.DateField(blank=True, null=True)
-        livro = models.ForeignKey(Livros, on_delete=models.CASCADE)
+    choices = (
+        ('P', 'péssimo'),
+        ('R', 'Ruim'),
+        ('B', 'Bom'),
+        ('O', 'Ótimo')
+
+    )
+    nome_emprestado = models.ForeignKey(Usuario, on_delete=models.DO_NOTHING, blank=True, null=True)
+    nome_emprestado_anonimo = models.CharField(max_length=30, blank=True, null=True)
+    data_emprestimo = models.DateTimeField(default=datetime.datetime.now())
+    data_devolucao = models.DateTimeField(blank=True, null=True)
+    livro = models.ForeignKey(Livros, on_delete=models.CASCADE)
+    avaliacao = models.CharField(max_length=1, choices=choices, blank=True, null=True)
 
 
-        def __str__(self):
-            return f"{self.nome_emprestado} | {self.livro}"
+    def __str__(self):
+        return f"{self.nome_emprestado} | {self.livro}"
 
 
 

@@ -42,9 +42,7 @@
                   <button style="margin-left: 15px;" onclick="mostrar_form(3)" class="btn btn-info">Emprestimo</button>
                   <br>
                   <hr>
-                  <br>
-
-                  <!-- esta é uma forma de fazer a tela de cadastro usando modal.Models -->
+                 <!-- esta é uma forma de fazer a tela de cadastro usando modal.Models -->
 
                   <div style="Display:none;" id="livro">
                     <form action="{% url 'cadastrar_livro' %}" method="POST">
@@ -67,8 +65,47 @@
                           <input type="submit" class="btn btn-success">
                       </form>
                   </div>
+
+                  <!-- mais um jeito de fazer formulario -->
                   <div style="Display:none;" id="emprestimos">
-                     emprestimos
+                      <button onclick="exibir_input_emprestado(1)" type="button" class="btn btn-warning">Novo Usuário</button>
+                      <button onclick="exibir_input_emprestado(2)" type="button" class="btn btn-dark">Usuário Existente</button>
+                      <br>
+                      <br>
+
+                      <form id="form_emprestimo" action="{% url 'cadastrar_emprestimo' %}" method="POST">{% csrf_token%}
+
+                          <h4><label>Usuário:</label></h4>
+                          <select style="display:none;" id="nome_emprestado" class="form-control" name="nome_emprestado">
+
+
+                              {% for var_usuario in var_usuario %}
+                                    <option value="{var_usuario.id}">{{var_usuario.nome}}</option>
+                              {% endfor %}
+
+                          </select>
+
+                          <br>
+                           <h4><label>Usuário sem cadastro:</label></h4>
+                            <input style="display:none;" id="nome_emprestado_anonimo" type="text" placeholder="Digite a pessoa para emprestar..." name="nome_emprestado_anonimo" class="form-control">
+
+                           <br>
+
+                           <h4><label>Livro:</label></h4>
+                          <select class="form-control" name="livro_emprestado">
+
+                              {% for livro in livros %}
+                                    <option value="{livro.id}">{{livro.nome}}</option>
+                              {% endfor %}
+
+                          </select>
+
+                          <br>
+
+
+                          <input type="submit" class="btn btn-success">
+                      </form>
+
                   </div>
               </div>
             </div>
@@ -97,6 +134,19 @@
                 categoria.style.display = 'none';
             }
         }
+
+        function exibir_input_emprestado(v1){
+
+          if(v1 == 1){
+            document.getElementById('nome_emprestado').style.display="none"
+            document.getElementById('name_emprestado_anonimo').style.display="block"
+          }else{
+            document.getElementById('nome_emprestado').style.display="block"
+            document.getElementById('name_emprestado_anonimo').style.display="none"
+
+          }
+        }
+
       </script>
   </body>
 </html>
