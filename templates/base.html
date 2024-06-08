@@ -78,9 +78,8 @@
                           <h4><label>Usuário:</label></h4>
                           <select style="display:none;" id="nome_emprestado" class="form-control" name="nome_emprestado">
 
-
-                              {% for var_usuario in var_usuario %}
-                                    <option value="{var_usuario.id}">{{var_usuario.nome}}</option>
+                              {% for usuario in usuarios %}
+							      <option value="{{ usuario.id }}">{{ usuario.nome }}</option>
                               {% endfor %}
 
                           </select>
@@ -92,10 +91,10 @@
                            <br>
 
                            <h4><label>Livro:</label></h4>
-                          <select class="form-control" name="livro_emprestado">
+                          <select id=livro_emprestado class="form-control" name="livro_emprestado">
 
                               {% for livro in livros %}
-                                    <option value="{livro.id}">{{livro.nome}}</option>
+                                    <option value="{{livro.id}}">{{livro.nome}}</option>
                               {% endfor %}
 
                           </select>
@@ -139,10 +138,10 @@
 
           if(v1 == 1){
             document.getElementById('nome_emprestado').style.display="none"
-            document.getElementById('name_emprestado_anonimo').style.display="block"
+            document.getElementById('nome_emprestado_anonimo').style.display="block"
           }else{
             document.getElementById('nome_emprestado').style.display="block"
-            document.getElementById('name_emprestado_anonimo').style.display="none"
+            document.getElementById('nome_emprestado_anonimo').style.display="none"
 
           }
         }
